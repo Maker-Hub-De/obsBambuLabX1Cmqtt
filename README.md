@@ -6,12 +6,20 @@ This OBS script allows users to get status information from a BambuLab X1C print
 <img src="documentationImages/sreamPreview.png" alt="Example of a obs stream configuration" style="width:50%; max-width:1658;">
 
 ## Features
+- Works in online mode as well in LAN-only mode
 - Real-time monitoring of printer status
 - Supports MQTT for data retrieval
 - Fetches print information such as nozzle temperature, bed temperature, remaining time, etc.
 - Updates text sources in OBS with the obtained data
 - Periodic updates with user-defined intervals
 - Integration with OBS sources for visual representation of the current model
+
+## Requirement
+- BambuLab X1 Carbon (it may work with other BambuLab printer as well; let me know)
+- Python 3.6 or 3.11
+- Paho MQTT client (paho-mqtt 2.0.0 for Python 3.11 (https://pypi.org/project/paho-mqtt/) or paho-mqtt 1.6.1 for Python 3.6 (https://pypi.org/project/paho-mqtt/1.6.1/))
+- OBS Studio 30 (it may work with older version as well; let me know)
+- For showing model image an SD-card in the printer is needed.<br>Additionally: If you are using the online mode, you have to activate the option "Cache cloud print files to MicroSD card" in the printer option.
 
 ## Setup
 1. Ensure that the required MQTT broker and FTP server are accessible.
