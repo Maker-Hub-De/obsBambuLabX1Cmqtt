@@ -2,7 +2,9 @@
 
 ## Description
 This OBS script allows users to get status information from a BambuLab X1C printer and show them in OBS. The information will be retrieved via MQTT and FTP protocols.
-![Example of a obs configuration](documentationImages/sreamPreview.png)
+
+<img src="documentationImages/sreamPreview.png" alt="Example of a obs stream configuration" style="width:50%; max-width:1658;">
+
 ## Features
 - Real-time monitoring of printer status
 - Supports MQTT for data retrieval
