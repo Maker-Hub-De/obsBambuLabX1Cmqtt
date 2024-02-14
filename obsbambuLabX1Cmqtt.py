@@ -1,6 +1,6 @@
 # OBS python script for reading status data from a BambuLab X1C
 # Author: Mia Sophie Behrendt; Maker-Hub.de
-# Description: OBS Script to get print information from an Bambu Lab X1C via mqtt and ftp
+# Description: Read status data from a BambuLab X1C
 
 import obspython as obs
 import paho.mqtt.client as mqtt
@@ -52,7 +52,7 @@ environment = {
     "host": "",
     "mqttPort": 8883,
     "ftpPort": 990,
-    "mqttUser": "bblp",
+    "user": "bblp",
     "secret": "",
     "serialNumber": "",
     "interval": 5,
@@ -269,20 +269,32 @@ def getModelImage(nodePrint):
     imageFileBinary = BytesIO()
 
     # Establish implicit ftp connection via TLS connection
-    with ImplicitFTP_TLS() as ftpClient:
-        ftpClient.connect(host='192.168.160.241', port=990)
-        ftpClient.login(user='bblp', passwd='14e1f45e')
-        ftpClient.prot_p()
+    try:
+        with ImplicitFTP_TLS() as ftpClient:
+            ftpClient.connect(host=environment["host"], port=environment["ftpPort"])
+            ftpClient.login(user=environment["user"], passwd=environment["secret"])
+            ftpClient.prot_p()
 
-        # Retrieve the file data from the FTP server and write it to the BytesIO object
-        ftpClient.retrbinary('RETR ' + modelFileName, modelZipBinary.write)
+            # Retrieve the file data from the FTP server and write it to the BytesIO object
+            ftpClient.retrbinary('RETR ' + modelFileName, modelZipBinary.write)
+
+    except ConnectionError:
+        log("Error establishing FTP connection:")
+        return
+    except PermissionError:
+        log("Failed to authenticate. Check your username and password.")
+        return
+    except Exception as e:
+        log("ftp error:", e)
+        return
 
     # Reset the file pointer to the beginning of the BytesIO object
-    modelZipBinary.seek(0)
 
     # Checking if the file is a zipfile
     if not zipfile.is_zipfile(modelZipBinary):
         return
+
+    modelZipBinary.seek(0)
 
     # Unpacking needed image from zip file
     with zipfile.ZipFile(modelZipBinary, 'r') as modelZipObject:
@@ -460,6 +472,7 @@ def threadedUpdate():
     while True:
         if environment["stopThread"]:
             disconnect()
+            log("update thread stoped")
             break
         
         start_time = time.time()
@@ -493,20 +506,27 @@ def connect():
         environment["mqttClient"] = None
 
     log("Connecting to MQTT broker...")
-    environment["mqttClient"] = mqtt.Client()
 
-    # Set username and password if provided
-    environment["mqttClient"].username_pw_set(environment["mqttUser"], environment["secret"])
+    try:
+        environment["mqttClient"] = mqtt.Client()
 
-    # Set the callback function
-    environment["mqttClient"].on_message = onMessage
-    environment["mqttClient"].on_connect = onConnect
-    environment["mqttClient"].on_disconnect = onDisconnect
+        # Set username and password if provided
+        environment["mqttClient"].username_pw_set(environment["user"], environment["secret"])
 
-    # Set TLS parameters
-    environment["mqttClient"].tls_set(cert_reqs=ssl.CERT_NONE)
-    environment["mqttClient"].connect( environment["host"], environment["mqttPort"], 60)
+        # Set the callback function
+        environment["mqttClient"].on_message = onMessage
+        environment["mqttClient"].on_disconnect = onDisconnect
+        environment["mqttClient"].on_connect = onConnect
 
+        # Set TLS parameters
+        environment["mqttClient"].tls_set(cert_reqs=ssl.CERT_NONE)
+        environment["mqttClient"].connect( environment["host"], environment["mqttPort"], 60)
+
+    except Exception as e:
+        log("Error connecting to MQTT broker:", e)
+        return False
+
+    return True
 
 """
 Reconnects to the MQTT broker.
@@ -539,6 +559,10 @@ Args:
 """
 def onConnect(mqttClient, userdata, flags, rc):
     global environment
+
+    if not mqttClient.is_connected():
+        return
+
     log("MQTT connection successful")
 
     mqttTopic = "device/" + environment["serialNumber"] + "/report"
@@ -549,14 +573,20 @@ def onConnect(mqttClient, userdata, flags, rc):
 Callback function for MQTT disconnection.
 
 Args:
-    mqttClient: The mqtt client instance.
-    userdata: The user data.
-    rc: The return code.
+    mqttClient: The MQTT client instance.
+    userdata: The user data associated with the client.
+    rc: The disconnection return code.
 """
 def onDisconnect(mqttClient, userdata, rc):
-    if rc != 0:
+    if rc == 5:
+        log("Incorrect access code; please verify it")
+        environment["stopThread"] = True
+        return
+
+    elif rc != 0:
         log(f"Unexpected disconnection from MQTT broker: {rc}")
         reconnect()
+        return
 
 
 """
@@ -568,8 +598,6 @@ Args:
 """
 def startButtonPressed(props, prop):
     global environment
-
-    log("Start button pressed")
 
     environment["taskId"] = ""
 
@@ -590,7 +618,8 @@ def startButtonPressed(props, prop):
         environment["stopThread"] = True
         environment["updateThread"].join()  # Wait for the existing thread to exit
         log("Existing thread stopped")
-    connect()
+    if not connect():
+        return
 
     # Reset the environment["stopThread"] flag and start a new thread
     environment["stopThread"] = False
@@ -609,7 +638,6 @@ Args:
 """
 def stopButtonPressed(props, prop):
     global environment
-    log("Stop button pressed")
     environment["stopThread"] = True
 
 
@@ -750,7 +778,6 @@ def script_update(settings):
     sourcePlate = obs.obs_data_get_string(settings, "sourcePlate")
     plate = obs.obs_data_get_string(settings, "plate")
 
-    log(environment["imageFolderPath"])
     if environment["imageFolderPath"] and sourcePlate != "" and sourcePlate != "[No picture source]" and plate:
 
         # Getting image source to show the plate
