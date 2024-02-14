@@ -19,7 +19,13 @@ This OBS script allows users to get status information from a BambuLab X1C print
 3. Set up OBS text sources for displaying different print parameters such as nozzle temperature, bed temperature, etc.
 4. Configure the script properties including the update interval and image paths for model and plate images.
 
+Example of source definition:<br>
+<img src="documentationImages/sourceDefinition.png" alt="Example of the script configuration" style="width:50%; max-height:962;">
+
 ## Settings
+
+<img src="documentationImages/scriptConfiguration.png" alt="Example of the script configuration" style="width:50%; max-height:1440;">
+
 - MQTT Host: Host address of the MQTT broker.
 - Access Code: Password for accessing the MQTT broker.
 - Serial Number: Serial number of the BambuLab X1C printer.
