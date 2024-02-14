@@ -727,8 +727,9 @@ def script_properties():
     if sources:
         for source in sources:
             source_id = obs.obs_source_get_unversioned_id(source)
+            name = obs.obs_source_get_name(source)
+
             if source_id in ("text_gdiplus", "text_ft2_source"):
-                name = obs.obs_source_get_name(source)
                 obs.obs_property_list_add_string(dropDownNozzleType, name, name)
                 obs.obs_property_list_add_string(dropDownNozzleTemp, name, name)
                 obs.obs_property_list_add_string(dropDownBedTemp, name, name)
@@ -739,8 +740,12 @@ def script_properties():
                 obs.obs_property_list_add_string(dropDownFilamentColor, name, name)
                 obs.obs_property_list_add_string(dropDownPercentFinish, name, name)
 
+            # Adding dropdown list items for color sources
+            elif source_id == "color_source":
+                obs.obs_property_list_add_string(dropDownFilamentColor, name, name)
+
+            # Adding dropdown list items for image sources
             if source_id == "image_source":
-                name = obs.obs_source_get_name(source)
                 obs.obs_property_list_add_string(dropDownPlateSource, name, name)
                 obs.obs_property_list_add_string(dropDownModelSource, name, name)
 
