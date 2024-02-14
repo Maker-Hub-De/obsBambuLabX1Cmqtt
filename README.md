@@ -44,14 +44,14 @@ Example of source definition:<br>
 - Text source for filament color: OBS source for displaying filament color information.
 - Text source for print completion percentage: OBS source for displaying print completion percentage.
 
-**Notes**
-Ensure that the required OBS sources are properly configured for accurate display of print status data.
-Make sure to provide valid MQTT broker credentials and printer details for successful data retrieval.
-
 ## Usage
 1. Start the script by clicking the "START" button.
 2. The script will connect to the MQTT broker and start retrieving printer status data.
 3. Monitor the OBS sources configured with the script for real-time updates on print status.
 4. Stop the script by clicking the "STOP" button when monitoring is no longer required.
+
+## Notes
+Ensure that the required OBS sources are properly configured for accurate display of print status data.
+Make sure to provide valid MQTT broker credentials and printer details for successful data retrieval.
 
 It may not be the best Python code, but it runs quite stably. Sometimes, the MQTT connection breaks with return code 16 (https://github.com/eclipse/paho.mqtt.python/issues/683). This issue appears to be related to the frequency of notifications released by the X1C (one per second). To address this, I implemented a reconnect feature, and it works fine now. However, if you have any suggestions for improving this code further, you are warmly welcome to share them.
