@@ -13,7 +13,7 @@ This OBS script allows users to get status information from a BambuLab X1C print
 
 ## Setup
 1. Ensure that the required MQTT broker and FTP server are accessible.
-2. Set text variable in script for your language
+2. Set the language variable in the script according to your preferred language.
 3. Set up OBS text sources for displaying different print parameters such as nozzle temperature, bed temperature, etc.
 4. Configure the script properties including the update interval and image paths for model and plate images.
 
