@@ -251,7 +251,14 @@ def getModelImage(nodePrint):
     if not modelFileName:
         return
 
-    modelFileName += ".gcode.3mf"
+    # Getting operation mode
+    printType  = nodePrint.get("print_type", "")
+
+    if printType == "cloud":
+        modelFileName += ".3mf"
+        modelFileName = "cache/" + modelFileName
+    else:
+        modelFileName += ".gcode.3mf"
 
     # Getting current plate which represents the image file
     modelImageFileName = nodePrint.get("gcode_file", "")
