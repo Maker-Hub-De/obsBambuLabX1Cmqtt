@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 300 300">
-  <g font-family="Arial" font-weight="700" letter-spacing="-.5">
-    <text xml:space="preserve" fill="#666" font-size="200" style="line-height:1;shape-inside:url(#rect2);white-space:pre" transform="matrix(.99999 0 0 .99999 88.282505 222.31355)"><tspan x="0" y="0">?</tspan></text>
-    <text xml:space="preserve" x="96.531738" fill="#fff" font-size="70" style="line-height:1.25;shape-inside:url(#rect1);white-space:pre" transform="matrix(.99999 0 0 .99999 49.829375 214.11983)"><tspan x="0" y="0">Model</tspan></text>
-    <text xml:space="preserve" x="96.531738" fill="#fff" font-size="70" style="line-height:1.25;shape-inside:url(#rect1);white-space:pre" transform="matrix(.99999 0 0 .99999 59.314241 135.13129)"><tspan x="0" y="0">Local</tspan></text>
-  </g>
+  <text xml:space="preserve" x="88.282501" y="222.31355" fill="#666" font-family="Arial" font-size="200" font-weight="700"><tspan x="88.282501" y="222.31355">?</tspan></text>
+  <text xml:space="preserve" x="146.36015" y="214.11983" fill="#fff" font-family="Arial" font-size="70" font-weight="700"><tspan x="49.829376" y="214.11983">Model</tspan></text>
+  <text xml:space="preserve" x="155.84502" y="135.13129" fill="#fff" font-family="Arial" font-size="70" font-weight="700"><tspan x="59.31424" y="135.13129">Local</tspan></text>
 </svg>
