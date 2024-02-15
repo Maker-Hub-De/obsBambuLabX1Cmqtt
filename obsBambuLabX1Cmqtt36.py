@@ -254,7 +254,7 @@ def getModelImage(nodePrint):
     # Getting operation mode
     printType  = nodePrint.get("print_type", "")
 
-    if printType == "cloud":
+    if printType == "cloud" or printType == "local":
         modelFileName += ".3mf"
         modelFileName = "cache/" + modelFileName
     else:
